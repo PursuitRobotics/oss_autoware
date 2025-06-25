@@ -105,12 +105,12 @@ _check-semver:
 # ==============================================================================
 
 native-setup: env-check ## native-Run the development environment setup script (setup-dev-env.sh).
-	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment ---$(RESET)"
+	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
 	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
 	@read -p "Continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		../setup-dev-env.sh; \
+		(cd .. && ./setup-dev-env.sh --no-nvidia --no-cuda-drivers --runtime); \
 	else \
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
@@ -128,7 +128,13 @@ native-deps: env-check ## native-Install system dependencies using rosdep.
 native-build: env-check ## native-Build the Autoware workspace using colcon.
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
 	source /opt/ros/humble/setup.bash
-	cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
+
+native-build-clean: env-check native-clean ## native-Build the Autoware workspace using colcon.
+	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
+	source /opt/ros/humble/setup.bash
+	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
+
 
 native-clean: ## native-Clean the native build artifacts (build, install, log).
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning native workspace ---$(RESET)"
