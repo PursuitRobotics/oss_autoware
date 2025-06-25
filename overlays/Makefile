@@ -57,7 +57,7 @@ help: ## Display this help menu.
 	@echo -e "$(WHITE_BRIGHT)Autoware Project Makefile$(RESET)"
 	@echo -e "$(GREY)Usage: make [target] [VAR=value]$(RESET)\n"
 	@echo -e "$(BLUE_BRIGHT)Environment & Tooling Targets:$(RESET)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## env-' | awk 'BEGIN {FS = ":.*?## env-";}; {printf "  %-30s %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## env-' | awk -v T="$(GREEN_BRIGHT)" -v D="$(GREY)" -v R="$(RESET)" 'BEGIN {FS = ":.*?## env-";}; {printf T "  %-30s" R " " D "%s" R "\n", $$1, $$2}'
 	@echo -e "\n$(BLUE_BRIGHT)Native (Baremetal) Build Targets:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## native-' | awk 'BEGIN {FS = ":.*?## native-";}; {printf "  %-30s %s\n", $$1, $$2}'
 	@echo -e "\n$(BLUE_BRIGHT)Generic Docker Targets (Stubbed):$(RESET)"
