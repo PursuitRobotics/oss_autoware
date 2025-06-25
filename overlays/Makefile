@@ -77,16 +77,12 @@ tool-check: ## env-Verify that essential tools (docker, git) are installed.
 	@$(call check_tool,git)
 
 env-check: tool-check ## env-Run all environment and dependency checks.
-	@echo -e "$(PURPLE_BRIGHT)--- Checking OS and dependencies ---$(RESET)"
+	@echo -e "$(PURPLE_BRIGHT)--- Checking OS envars, and dependencies ---$(RESET)"
 	@if ! grep -q 'Ubuntu 22.04' /etc/os-release; then \
 		echo -e "$(RED_BRIGHT)Error: Host OS is not Ubuntu 22.04. Some features may not work.$(RESET)"; \
 		exit 1; \
 	fi
 	@echo -e "$(GREY)  [✔] OS Check: Ubuntu 22.04 detected.$(RESET)"
-	@if ! dpkg -s ros-dev-tools >/dev/null 2>&1; then \
-		echo -e "$(RED_BRIGHT)Error: 'ros-dev-tools' is not installed. Please run 'sudo apt install ros-dev-tools'.$(RESET)"; \
-		exit 1; \
-	fi
 	@if [ -z "$(TOOL_ROSDEP_PATH)" ]; then \
 		echo -e "$(RED_BRIGHT)Error: 'rosdep' is not found in PATH. Please run 'sudo apt install python3-rosdep'.$(RESET)"; \
 		exit 1; \
