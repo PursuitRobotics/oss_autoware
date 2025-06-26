@@ -126,28 +126,25 @@ native-setup-dev-cuda: env-check ## native-Run the development environment setup
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-
 native-workspace-import: env-check ## native-Import Autoware source repositories using vcstool.
 	@echo -e "$(PURPLE_BRIGHT)--- Importing source repositories ---$(RESET)"
 	mkdir -p ../src
 	vcs import ../src < ../autoware.repos
 
-native-install-deps: env-check ## native-Install system dependencies using rosdep.
+native-ros-deps: env-check ## native-Install ros2 system dependencies using rosdep.
 	@echo -e "$(PURPLE_BRIGHT)--- Installing ROS dependencies ---$(RESET)"
 	rosdep update
 	source /opt/ros/humble/setup.bash && \
-	rosdep install -y --from-paths ../src --ignore-src --rosdistro $(ROS_DISTRO)
+	(rosdep install -y --from-paths ../src --ignore-src --rosdistro $(ROS_DISTRO))
 
-native-build: env-check native-deps ## native-Build the Autoware workspace using colcon.
+native-build: env-check native-ros-deps ## native-Build the Autoware workspace using colcon.
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
 	source /opt/ros/humble/setup.bash && \
 	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
 
-native-build-clean: env-check native-clean ## native-Build the Autoware workspace using colcon.
+native-build-clean: env-check native-clean native-build ## native-Build the Autoware workspace using colcon.
 	@echo -e "$(GREY)Cleaning previous build artifacts...$(RESET)"
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
-	source /opt/ros/humble/setup.bash && \
-	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
 
 native-build-gui: env-check  ## native-Build the Autoware workspace using GUI.
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace with GUI ---$(RESET)"
@@ -158,7 +155,7 @@ native-build-gui: env-check  ## native-Build the Autoware workspace using GUI.
 
 native-clean: ## native-Clean the native build artifacts (build, install, log).
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning native workspace ---$(RESET)"
-	rm -rf ../build/ ../install/ ../log/
+	rm -rf ../src/ ../build/ ../install/ ../log/
 
 # ==============================================================================
 # Container Targets (Monolithic, autoware/docker/...)
