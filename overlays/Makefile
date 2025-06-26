@@ -211,3 +211,14 @@ docker-openad-build-cuda: env-check ## openad-Build CUDA-enabled images using th
 clean: native-clean ## util-Clean all build artifacts from the workspace.
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
 	-docker image prune -f
+
+os-setup: env-check native-clean ## util-Setup system for Autoware development.
+	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
+	@echo "This will run remove all data, staged states, and configuration from your system."
+	@read -p "Do you wish to continue? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		(rm -rf /srv/autoware && echo 'removed /srv/autoware/'); \
+	else \
+		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
+	fi
