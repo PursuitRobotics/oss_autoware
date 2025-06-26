@@ -5,9 +5,18 @@
 
 ```shell
 source ~/autoware/install/setup.bash
-ros2 launch autoware_launch planning_simulator.launch.xml map_path:=${AW_MAP}/sample-map-planning vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit
+
+ros2 launch autoware_launch planning_simulator.launch.xml map_path:=${AW_MAP}/sample-map-planning vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit perception:=false
 
 ```
+# Rosbag Simulator
+
+ros2 launch autoware_launch logging_simulator.launch.xml map_path:=$AW_MAP/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit
+
+ros2 bag play $AW_MAP/sample-rosbag/ -r 0.2 -s sqlite3
+
+ros2 bag info $AW_MAP/sample-rosbag
+ros2 topic echo <topic>
 
 # Scenario Testing
 
