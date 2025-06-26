@@ -60,9 +60,9 @@ help: ## Display this help menu.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## env-' | awk -v T="$(GREEN_BRIGHT)" -v D="$(GREY)" -v R="$(RESET)" 'BEGIN {FS = ":.*?## env-";}; {printf T "  %-30s" R " " D "%s" R "\n", $$1, $$2}'
 	@echo -e "\n$(BLUE_BRIGHT)Native (Baremetal) Build Targets:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## native-' | awk 'BEGIN {FS = ":.*?## native-";}; {printf "  %-30s %s\n", $$1, $$2}'
-	@echo -e "\n$(BLUE_BRIGHT)Generic Docker Targets (Stubbed):$(RESET)"
+	@echo -e "\n$(BLUE_BRIGHT)Container Targets (Monolithic):$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## docker-' | awk 'BEGIN {FS = ":.*?## docker-";}; {printf "  %-30s %s\n", $$1, $$2}'
-	@echo -e "\n$(BLUE_BRIGHT)OpenAD Kit Docker Build Targets:$(RESET)"
+	@echo -e "\n$(BLUE_BRIGHT)OpenAD Kit Container Targets:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## openad-' | awk 'BEGIN {FS = ":.*?## openad-";}; {printf "  %-30s %s\n", $$1, $$2}'
 	@echo -e "\n$(BLUE_BRIGHT)Utility Targets:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## util-' | awk 'BEGIN {FS = ":.*?## util-";}; {printf "  %-30s %s\n", $$1, $$2}'
@@ -161,26 +161,17 @@ native-clean: ## native-Clean the native build artifacts (build, install, log).
 	rm -rf ../build/ ../install/ ../log/
 
 # ==============================================================================
-# Generic Docker Targets (Stubbed)
+# Container Targets (Monolithic, autoware/docker/...)
 # ==============================================================================
 
-docker-build: tool-check _check-semver ## docker-Build a Docker image (stubbed). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
-	@echo -e "$(PURPLE_BRIGHT)--- Building Docker Image (Stub) ---$(RESET)"
-	@echo -e "Image Name: $(ORANGE)$(IMAGE_NAME)$(RESET)"
-	@echo -e "Image Tag:  $(ORANGE)$(IMAGE_TAG)$(RESET)"
-	@echo -e "Full URL:   $(ORANGE)$(IMAGE_URL)$(RESET)"
-	@echo -e "$(GREY)Command: docker build -t $(IMAGE_URL) .$(RESET)"
+docker-build: tool-check  ## docker-Build a container image (Monolithic). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
+	@echo -e "$(PURPLE_BRIGHT)--- Building Container Image (Monolithic) ---$(RESET)"
+	(cd ../docker && ./build.sh --no-cuda --platform linux/arm64 --devel-only --target universe-devel)
 
-docker-tag: tool-check _check-semver ## docker-Tag a Docker image (stubbed). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
-	@echo -e "$(PURPLE_BRIGHT)--- Tagging Docker Image (Stub) ---$(RESET)"
-	@echo -e "Source:     $(ORANGE)$(IMAGE_NAME):latest$(RESET)"
-	@echo -e "Target:     $(ORANGE)$(IMAGE_URL)$(RESET)"
-	@echo -e "$(GREY)Command: docker tag $(IMAGE_NAME):latest $(IMAGE_URL)$(RESET)"
+docker-run: tool-check  ## docker-Tag a Docker image (stubbed). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
+	@echo -e "$(PURPLE_BRIGHT)--- Running Container  Image (universe-devel) ---$(RESET)"
+	(cd ../docker && ./run.sh --map-path $(AW_MAP)/ --data-path $(AW_DATA)/ --devel --no-nvidia --pull-latest-image)
 
-docker-push: tool-check _check-semver ## docker-Push a Docker image to a registry (stubbed). Params: IMAGE_URL.
-	@echo -e "$(PURPLE_BRIGHT)--- Pushing Docker Image (Stub) ---$(RESET)"
-	@echo -e "Pushing to: $(ORANGE)$(IMAGE_URL)$(RESET)"
-	@echo -e "$(GREY)Command: docker push $(IMAGE_URL)$(RESET)"
 
 # ==============================================================================
 # Docker Build Environments
