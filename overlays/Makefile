@@ -104,7 +104,7 @@ _check-semver:
 # Native (Baremetal) Build Targets
 # ==============================================================================
 
-native-setup: env-check ## native-Run the development environment setup script (setup-dev-env.sh).
+native-setup-dev-no-cuda: env-check ## native-Run the development environment setup script (setup-dev-env.sh) with no cuda and no nvidia drivers.
 	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
 	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
 	@read -p "Continue? [y/N] " -n 1 -r; \
@@ -115,25 +115,45 @@ native-setup: env-check ## native-Run the development environment setup script (
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-native-import: env-check ## native-Import Autoware source repositories using vcstool.
+native-setup-dev-cuda: env-check ## native-Run the development environment setup script (setup-dev-env.sh) with cuda and nvidia drivers.
+	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
+	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
+	@read -p "Continue? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		(cd .. && ./setup-dev-env.sh -v --data-dir $AW_DATA); \
+	else \
+		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
+	fi
+
+
+native-workspace-import: env-check ## native-Import Autoware source repositories using vcstool.
 	@echo -e "$(PURPLE_BRIGHT)--- Importing source repositories ---$(RESET)"
 	mkdir -p ../src
 	vcs import ../src < ../autoware.repos
 
-native-deps: env-check ## native-Install system dependencies using rosdep.
+native-install-deps: env-check ## native-Install system dependencies using rosdep.
 	@echo -e "$(PURPLE_BRIGHT)--- Installing ROS dependencies ---$(RESET)"
 	rosdep update
-	rosdep install -y --from-paths ../src --ignore-src --rosdistro humble
+	source /opt/ros/humble/setup.bash && \
+	rosdep install -y --from-paths ../src --ignore-src --rosdistro $(ROS_DISTRO)
 
-native-build: env-check ## native-Build the Autoware workspace using colcon.
+native-build: env-check native-deps ## native-Build the Autoware workspace using colcon.
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
-	source /opt/ros/humble/setup.bash
+	source /opt/ros/humble/setup.bash && \
 	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
 
 native-build-clean: env-check native-clean ## native-Build the Autoware workspace using colcon.
+	@echo -e "$(GREY)Cleaning previous build artifacts...$(RESET)"
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
-	source /opt/ros/humble/setup.bash
+	source /opt/ros/humble/setup.bash && \
 	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
+
+native-build-gui: env-check  ## native-Build the Autoware workspace using GUI.
+	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace with GUI ---$(RESET)"
+	cd ..\.. && \
+	git clone https://github.com/leo-drive/autoware-build-gui.git && cd autoware-build-gui && \
+	pnpm install && pnpm tauri dev
 
 
 native-clean: ## native-Clean the native build artifacts (build, install, log).
