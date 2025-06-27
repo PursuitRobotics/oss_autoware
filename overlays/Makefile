@@ -166,6 +166,7 @@ nos-setup-dev-cuda: env-check-base ## native-Run the development environment set
 
 nos-workspace-autoware: env-check ## native-Import Autoware source repositories using vcstool.
 	@echo -e "$(PURPLE_BRIGHT)--- Importing source repositories ---$(RESET)"
+	rm -rf ../src
 	mkdir -p ../src
 	vcs import ../src < ../autoware.repos
 
