@@ -63,7 +63,7 @@ help: ## Display this help menu.
 	@echo -e "$(GREY)Usage: make [target] [VAR=value]$(RESET)\n"
 	@echo -e "$(BLUE_BRIGHT)Environment & Tooling Targets:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## env-' | awk -v T="$(GREEN_BRIGHT)" -v D="$(GREY)" -v R="$(RESET)" 'BEGIN {FS = ":.*?## env-";}; {printf T "  %-30s" R " " D "%s" R "\n", $$1, $$2}'
-	@echo -e "\n$(BLUE_BRIGHT)Native (Baremetal) Build Targets:$(RESET)"
+	@echo -e "\n$(BLUE_BRIGHT)NOS (Native Operating System) Build Targets:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## native-' | awk 'BEGIN {FS = ":.*?## native-";}; {printf "  %-30s %s\n", $$1, $$2}'
 	@echo -e "\n$(BLUE_BRIGHT)Container Targets (Monolithic):$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## docker-' | awk 'BEGIN {FS = ":.*?## docker-";}; {printf "  %-30s %s\n", $$1, $$2}'
@@ -142,7 +142,7 @@ _check-semver:
 # NOS (Native Operating System) Build Targets
 # ==============================================================================
 
-native-setup-dev-no-cuda: env-check-base ## native-Run the development environment setup script (setup-dev-env.sh) with no cuda and no nvidia drivers.
+nos-setup-dev-no-cuda: env-check-base ## native-Run the development environment setup script (setup-dev-env.sh) with no cuda and no nvidia drivers.
 	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
 	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
 	@read -p "Continue? [y/N] " -n 1 -r; \
@@ -153,7 +153,7 @@ native-setup-dev-no-cuda: env-check-base ## native-Run the development environme
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-native-setup-dev-cuda: env-check-base ## native-Run the development environment setup script (setup-dev-env.sh) with cuda and nvidia drivers.
+nos-setup-dev-cuda: env-check-base ## native-Run the development environment setup script (setup-dev-env.sh) with cuda and nvidia drivers.
 	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
 	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
 	@read -p "Continue? [y/N] " -n 1 -r; \
@@ -164,12 +164,12 @@ native-setup-dev-cuda: env-check-base ## native-Run the development environment 
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-native-workspace-import: env-check ## native-Import Autoware source repositories using vcstool.
+nos-workspace-autoware: env-check ## native-Import Autoware source repositories using vcstool.
 	@echo -e "$(PURPLE_BRIGHT)--- Importing source repositories ---$(RESET)"
 	mkdir -p ../src
 	vcs import ../src < ../autoware.repos
 
-native-ros-deps: env-check ## native-Install ros2 system dependencies using rosdep.
+nos-ros-deps: env-check ## native-Install ros2 system dependencies using rosdep.
 	@echo -e "$(PURPLE_BRIGHT)--- Installing ROS dependencies ---$(RESET)"
 	@bash -c ' \
 		set -e; \
@@ -178,23 +178,23 @@ native-ros-deps: env-check ## native-Install ros2 system dependencies using rosd
 		rosdep install -y --from-paths ../src --ignore-src --rosdistro $(ROS_DISTRO); \
 	'
 
-native-build: env-check native-ros-deps ## native-Build the Autoware workspace using colcon.
+nos-build: env-check nos-ros-deps ## native-Build the Autoware workspace using colcon.
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
 	source /opt/ros/humble/setup.bash && \
 	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
 
-native-build-clean: env-check native-clean native-workspace-import native-build ## native-Build the Autoware workspace using colcon.
+nos-build-clean: env-check nos-clean nos-workspace-aw nos-build ## native-Build the Autoware workspace using colcon.
 	@echo -e "$(GREY)Cleaning previous build artifacts...$(RESET)"
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
 
-native-build-gui: env-check  ## native-Build the Autoware workspace using GUI.
+nos-build-gui: env-check  ## native-Build the Autoware workspace using GUI.
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace with GUI ---$(RESET)"
 	cd ..\.. && \
 	git clone https://github.com/leo-drive/autoware-build-gui.git && cd autoware-build-gui && \
 	pnpm install && pnpm tauri dev
 
 
-native-clean: ## native-Clean the native build artifacts (build, install, log).
+nos-clean: ## native-Clean the native build artifacts (build, install, log).
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning native workspace ---$(RESET)"
 	rm -rf ../src/ ../build/ ../install/ ../log/
 
@@ -202,11 +202,11 @@ native-clean: ## native-Clean the native build artifacts (build, install, log).
 # Container Targets (Monolithic, autoware/docker/...)
 # ==============================================================================
 
-docker-build: tool-check  ## docker-Build a container image (Monolithic). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
+cos-build: tool-check  ## docker-Build a container image (Monolithic). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
 	@echo -e "$(PURPLE_BRIGHT)--- Building Container Image (Monolithic) ---$(RESET)"
 	(cd ../docker && ./build.sh --no-cuda --platform linux/arm64 --devel-only --target universe-devel)
 
-docker-run: tool-check  ## docker-Tag a Docker image (stubbed). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
+cos-run: tool-check  ## docker-Tag a Docker image (stubbed). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
 	@echo -e "$(PURPLE_BRIGHT)--- Running Container  Image (universe-devel) ---$(RESET)"
 	(cd ../docker && ./run.sh --map-path $(AW_MAPS)/ --data-path $(AW_DATA)/ --devel --no-nvidia --pull-latest-image)
 
@@ -215,13 +215,13 @@ docker-run: tool-check  ## docker-Tag a Docker image (stubbed). Params: IMAGE_UR
 # Docker Build Environments
 # ==============================================================================
 
-docker-monolithic-build: ## openad-Build a single, monolithic Docker container (stubbed).
+cos-mono-build: ## openad-Build a single, monolithic Docker container (stubbed).
 	@echo -e "$(PURPLE_BRIGHT)--- Building Monolithic Docker Image (Stub) ---$(RESET)"
 	@echo -e "$(GREY)This target is a placeholder. It would typically run a command like:$(RESET)"
 	@echo -e "$(GREY)docker build -f ../docker/Dockerfile.monolithic -t $(IMAGE_REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)-monolithic .$(RESET)"
 	@echo -e "$(ORANGE)Action: No operation performed.$(RESET)"
 
-docker-openad-build: env-check ## openad-Build non-CUDA images using the OpenAD Kit 'docker bake' prescription.
+cos-openad-build: env-check ## openad-Build non-CUDA images using the OpenAD Kit 'docker bake' prescription.
 	@echo -e "$(PURPLE_BRIGHT)--- Building OpenAD Kit Images (non-CUDA) ---$(RESET)"
 	@echo "This will build all non-CUDA targets defined in '../docker/docker-bake.hcl'."
 	@echo -e "$(GREY)Command: docker bake -f ../docker/docker-bake.hcl --progress=plain$(RESET)"
@@ -233,7 +233,7 @@ docker-openad-build: env-check ## openad-Build non-CUDA images using the OpenAD 
 		echo -e "$(ORANGE)Build cancelled.$(RESET)"; \
 	fi
 
-docker-openad-build-cuda: env-check ## openad-Build CUDA-enabled images using the OpenAD Kit 'docker bake' prescription.
+cos-openad-build-cuda: env-check ## openad-Build CUDA-enabled images using the OpenAD Kit 'docker bake' prescription.
 	@echo -e "$(PURPLE_BRIGHT)--- Building OpenAD Kit Images (CUDA) ---$(RESET)"
 	@echo "This will build all CUDA targets defined in '../docker/docker-bake-cuda.hcl'."
 	@echo -e "$(GREY)Command: docker bake -f ../docker/docker-bake-cuda.hcl --progress=plain$(RESET)"
@@ -249,11 +249,11 @@ docker-openad-build-cuda: env-check ## openad-Build CUDA-enabled images using th
 # Utility Targets
 # ==============================================================================
 
-clean: native-clean ## util-Clean all build artifacts from the workspace.
+clean: nos-clean ## util-Clean all build artifacts from the workspace.
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
 	-docker image prune -f
 
-os-setup: env-check native-clean ## util-Setup system for Autoware development.
+os-setup: env-check nos-clean ## util-Setup system for Autoware development.
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
 	@echo "This will run remove all data, staged states, and configuration from your system."
 	@read -p "Do you wish to continue? [y/N] " -n 1 -r; \
@@ -264,7 +264,7 @@ os-setup: env-check native-clean ## util-Setup system for Autoware development.
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-stage-data-maps: env-check ## util-Setup system for Autoware development.
+stage-data-maps: env-check-base ## util-Setup system for Autoware development.
 	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and maps ---$(RESET)"
 	@echo "This will download and stage the autoware maps and data on your system."
 	@bash -c ' \
