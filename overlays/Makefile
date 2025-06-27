@@ -133,9 +133,12 @@ native-workspace-import: env-check ## native-Import Autoware source repositories
 
 native-ros-deps: env-check ## native-Install ros2 system dependencies using rosdep.
 	@echo -e "$(PURPLE_BRIGHT)--- Installing ROS dependencies ---$(RESET)"
-	rosdep update
-	source /opt/ros/humble/setup.bash && \
-	(rosdep install -y --from-paths ../src --ignore-src --rosdistro $(ROS_DISTRO))
+	@bash -c ' \
+		set -e; \
+		rosdep update; \
+		source /opt/ros/$(ROS_DISTRO)/setup.bash; \
+		rosdep install -y --from-paths ../src --ignore-src --rosdistro $(ROS_DISTRO); \
+	'
 
 native-build: env-check ## native-Build the Autoware workspace using colcon.
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
