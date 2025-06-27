@@ -140,7 +140,7 @@ native-ros-deps: env-check ## native-Install ros2 system dependencies using rosd
 		rosdep install -y --from-paths ../src --ignore-src --rosdistro $(ROS_DISTRO); \
 	'
 
-native-build: env-check ## native-Build the Autoware workspace using colcon.
+native-build: env-check native-ros-deps ## native-Build the Autoware workspace using colcon.
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
 	source /opt/ros/humble/setup.bash && \
 	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
