@@ -170,7 +170,7 @@ docker-build: tool-check  ## docker-Build a container image (Monolithic). Params
 
 docker-run: tool-check  ## docker-Tag a Docker image (stubbed). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
 	@echo -e "$(PURPLE_BRIGHT)--- Running Container  Image (universe-devel) ---$(RESET)"
-	(cd ../docker && ./run.sh --map-path $(AW_MAP)/ --data-path $(AW_DATA)/ --devel --no-nvidia --pull-latest-image)
+	(cd ../docker && ./run.sh --map-path $(AW_MAPS)/ --data-path $(AW_DATA)/ --devel --no-nvidia --pull-latest-image)
 
 
 # ==============================================================================
@@ -233,14 +233,14 @@ stage-data-map: env-check ## util-Setup system for Autoware development.
 	read -p "Do you wish to continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		echo "Removing dir: $(AW_MAP)/sample-map-planning/"; \
-		sudo rm -rf "$(AW_MAP)/sample-map-planning/"; \
+		echo "Removing dir: $(AW_MAPS)/sample-map-planning/"; \
+		sudo rm -rf "$(AW_MAPS)/sample-map-planning/"; \
 		echo "Downloading maps..."; \
-		sudo curl -L -o "$(AW_MAP)/sample-map-planning.zip" "https://docs.google.com/uc?export=download&id=1499_nsbUbIeturZaDj7jhUownh5fvXHd"; \
+		sudo curl -L -o "$(AW_MAPS)/sample-map-planning.zip" "https://docs.google.com/uc?export=download&id=1499_nsbUbIeturZaDj7jhUownh5fvXHd"; \
 		echo "Unzipping..."; \
-		sudo unzip -d "$(AW_MAP)" "$(AW_MAP)/sample-map-planning.zip"; \
+		sudo unzip -d "$(AW_MAPS)" "$(AW_MAPS)/sample-map-planning.zip"; \
 		echo "Cleaning up..."; \
-		sudo rm "$(AW_MAP)/sample-map-planning.zip"; \
+		sudo rm "$(AW_MAPS)/sample-map-planning.zip"; \
 	else \
 		echo -e "$(ORANGE)Data preparation cancelled.$(RESET)"; \
 	fi'
