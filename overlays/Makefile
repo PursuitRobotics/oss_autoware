@@ -142,7 +142,7 @@ _check-semver:
 # NOS (Native Operating System) Build Targets
 # ==============================================================================
 
-nos-setup-dev-no-cuda: env-check-base ## native-Run the development environment setup script (setup-dev-env.sh) with no cuda and no nvidia drivers.
+nos-setup-dev-no-cuda: env-check-base ## native-Run the dev env setup script w/o cuda and no nvidia drivers.
 	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
 	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
 	@read -p "Continue? [y/N] " -n 1 -r; \
@@ -153,7 +153,7 @@ nos-setup-dev-no-cuda: env-check-base ## native-Run the development environment 
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-nos-setup-dev-cuda: env-check-base ## native-Run the development environment setup script (setup-dev-env.sh) with cuda and nvidia drivers.
+nos-setup-dev-cuda: env-check-base ## native-Run the dev env setup script w/ cuda and nvidia drivers.
 	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
 	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
 	@read -p "Continue? [y/N] " -n 1 -r; \

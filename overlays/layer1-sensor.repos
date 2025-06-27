@@ -1,0 +1,21 @@
+repositories:
+  common_interfaces:
+    type: git
+    url: https://github.com/ros2/common_interfaces.git
+    version: humble
+  velodyne:
+    type: git
+    url: https://github.com/ros-drivers/velodyne.git
+    version: ros2
+  pointcloud_preprocessor:
+    type: git
+    url: https://github.com/tier4/pointcloud_preprocessor.git
+    version: main
+  imu_corrector:
+    type: git
+    url: https://github.com/tier4/imu_corrector.git
+    version: main
+  image_pipeline:
+    type: git
+    url: https://github.com/ros-perception/image_pipeline.git
+    version: ros2
