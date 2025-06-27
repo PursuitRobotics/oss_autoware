@@ -42,6 +42,11 @@ PURPLE_BRIGHT  := \033[1;35m
 ORANGE         := \033[0;33m
 WHITE_BRIGHT   := \033[1;37m
 GREY           := \033[0;90m
+YELLOW_LIGHT   := \033[0;33m
+YELLOW_BRIGHT  := \033[1;33m
+MAGENTA_LIGHT  := \033[0;35m
+MAGENTA_BRIGHT := \033[1;35m
+PINK           := \033[1;95m  # Bright pink (light magenta)
 
 # --- Helper Functions ---
 # Defines a function to check for a tool's existence.
@@ -81,14 +86,33 @@ tool-check: ## env-Verify that essential tools (docker, git) are installed.
 	@$(call check_tool,docker)
 	@$(call check_tool,git)
 
+# Add this target to your existing Makefile
+
+tool-check-gpu: ## env-Check for NVIDIA GPU and mRoc device
+	@echo -e "$(PURPLE_BRIGHT)--- Checking for GPU (NVIDIA or AMD) ---$(RESET)"
+	@if ! command -v nvidia-smi >/dev/null; then \
+		echo -e "Warning: $(YELLOW_BRIGHT)NVIDIA GPU not found. CUDA-dependent modules will be skipped or fail.$(RESET)"; \
+	fi
+	@if lspci | grep -i nvidia > /dev/null; then \
+		echo -e "$(GREEN_BRIGHT)✔ NVIDIA GPU detected. Installing CUDA libraries...$(RESET)"; \
+		# sudo apt update && sudo apt install -y nvidia-cuda-toolkit; \
+	elif lspci | grep -i amd | grep -i vga > /dev/null; then \
+		echo -e "$(YELLOW_BRIGHT)⚠ AMD GPU detected. CUDA is not supported on AMD.$(RESET)"; \
+		echo -e "$(RED_BRIGHT)no cuda found$(RESET)"; \
+	else \
+		echo -e "$(RED_BRIGHT)✘ No compatible GPU detected$(RESET)"; \
+		echo -e "$(RED_BRIGHT)no cuda found$(RESET)"; \
+	fi
+	@echo -e "$(PURPLE_BRIGHT)--- Checking for mRoc device ---$(RESET)"
+	@if lspci | grep -i mroc > /dev/null || lsusb | grep -i mroc > /dev/null; then \
+		echo -e "$(GREEN_BRIGHT)✔ mRoc device found$(RESET)"; \
+	else \
+		echo -e "$(RED_BRIGHT)✘ mRoc device not detected$(RESET)"; \
+	fi
+
+
 env-check-base: tool-check ## env-Run all environment and dependency checks.
 	@echo -e "$(PURPLE_BRIGHT)--- Checking basic ennvars and tools---$(RESET)"
-
-_check-semver:
-	@if ! [[ "$(IMAGE_TAG)" =~ $(SEMVER_REGEX) ]]; then \
-		echo -e "$(RED_BRIGHT)Error: IMAGE_TAG '$(IMAGE_TAG)' is not a valid Semantic Version.$(RESET)"; \
-		exit 1; \
-	fi
 
 env-check: env-check-base ## env-Run all environment and dependency checks.
 	@echo -e "$(PURPLE_BRIGHT)--- Checking OS envars, and dependencies ---$(RESET)"
