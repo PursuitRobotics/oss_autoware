@@ -139,7 +139,7 @@ _check-semver:
 	fi
 
 # ==============================================================================
-# Native (Baremetal) Build Targets
+# NOS (Native Operating System) Build Targets
 # ==============================================================================
 
 native-setup-dev-no-cuda: env-check-base ## native-Run the development environment setup script (setup-dev-env.sh) with no cuda and no nvidia drivers.
