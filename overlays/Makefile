@@ -72,11 +72,25 @@ help: ## Display this help menu.
 # ==============================================================================
 
 tool-check: ## env-Verify that essential tools (docker, git) are installed.
+	@echo -e "$(PURPLE_BRIGHT)--- Checking OS envars, and dependencies ---$(RESET)"
+	@if ! grep -q 'Ubuntu 22.04' /etc/os-release; then \
+		echo -e "$(RED_BRIGHT)Error: Host OS is not Ubuntu 22.04. Some features may not work.$(RESET)"; \
+		exit 1; \
+	fi
 	@echo -e "$(PURPLE_BRIGHT)--- Checking for required tools ---$(RESET)"
 	@$(call check_tool,docker)
 	@$(call check_tool,git)
 
-env-check: tool-check ## env-Run all environment and dependency checks.
+env-check-base: tool-check ## env-Run all environment and dependency checks.
+	@echo -e "$(PURPLE_BRIGHT)--- Checking basic ennvars and tools---$(RESET)"
+
+_check-semver:
+	@if ! [[ "$(IMAGE_TAG)" =~ $(SEMVER_REGEX) ]]; then \
+		echo -e "$(RED_BRIGHT)Error: IMAGE_TAG '$(IMAGE_TAG)' is not a valid Semantic Version.$(RESET)"; \
+		exit 1; \
+	fi
+
+env-check: env-check-base ## env-Run all environment and dependency checks.
 	@echo -e "$(PURPLE_BRIGHT)--- Checking OS envars, and dependencies ---$(RESET)"
 	@if ! grep -q 'Ubuntu 22.04' /etc/os-release; then \
 		echo -e "$(RED_BRIGHT)Error: Host OS is not Ubuntu 22.04. Some features may not work.$(RESET)"; \
@@ -104,7 +118,7 @@ _check-semver:
 # Native (Baremetal) Build Targets
 # ==============================================================================
 
-native-setup-dev-no-cuda: env-check ## native-Run the development environment setup script (setup-dev-env.sh) with no cuda and no nvidia drivers.
+native-setup-dev-no-cuda: env-check-base ## native-Run the development environment setup script (setup-dev-env.sh) with no cuda and no nvidia drivers.
 	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
 	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
 	@read -p "Continue? [y/N] " -n 1 -r; \
@@ -115,7 +129,7 @@ native-setup-dev-no-cuda: env-check ## native-Run the development environment se
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-native-setup-dev-cuda: env-check ## native-Run the development environment setup script (setup-dev-env.sh) with cuda and nvidia drivers.
+native-setup-dev-cuda: env-check-base ## native-Run the development environment setup script (setup-dev-env.sh) with cuda and nvidia drivers.
 	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
 	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
 	@read -p "Continue? [y/N] " -n 1 -r; \
