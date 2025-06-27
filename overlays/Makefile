@@ -222,3 +222,23 @@ os-setup: env-check native-clean ## util-Setup system for Autoware development.
 	else \
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
+
+stage-data-map: env-check ## util-Setup system for Autoware development.
+	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and maps ---$(RESET)"
+	@echo "This will download and stage the autoware maps and data on your system."
+	@bash -c ' \
+	read -p "Do you wish to continue? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		echo "Removing dir: $(AW_MAP)/sample-map-planning/"; \
+		sudo rm -rf "$(AW_MAP)/sample-map-planning/"; \
+		echo "Downloading maps..."; \
+		sudo curl -L -o "$(AW_MAP)/sample-map-planning.zip" "https://docs.google.com/uc?export=download&id=1499_nsbUbIeturZaDj7jhUownh5fvXHd"; \
+		echo "Unzipping..."; \
+		sudo unzip -d "$(AW_MAP)" "$(AW_MAP)/sample-map-planning.zip"; \
+		echo "Cleaning up..."; \
+		sudo rm "$(AW_MAP)/sample-map-planning.zip"; \
+	else \
+		echo -e "$(ORANGE)Data preparation cancelled.$(RESET)"; \
+	fi'
+
