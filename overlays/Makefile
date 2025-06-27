@@ -145,7 +145,7 @@ native-build: env-check native-ros-deps ## native-Build the Autoware workspace u
 	source /opt/ros/humble/setup.bash && \
 	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
 
-native-build-clean: env-check native-clean native-build ## native-Build the Autoware workspace using colcon.
+native-build-clean: env-check native-clean native-workspace-import native-build ## native-Build the Autoware workspace using colcon.
 	@echo -e "$(GREY)Cleaning previous build artifacts...$(RESET)"
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
 
