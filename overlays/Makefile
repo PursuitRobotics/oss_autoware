@@ -226,7 +226,7 @@ os-setup: env-check native-clean ## util-Setup system for Autoware development.
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-stage-data-map: env-check ## util-Setup system for Autoware development.
+stage-data-maps: env-check ## util-Setup system for Autoware development.
 	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and maps ---$(RESET)"
 	@echo "This will download and stage the autoware maps and data on your system."
 	@bash -c ' \
