@@ -184,7 +184,7 @@ nos-build: env-check nos-ros-deps ## native-Build the Autoware workspace using c
 	source /opt/ros/humble/setup.bash && \
 	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
 
-nos-build-clean: env-check nos-clean nos-workspace-aw nos-build ## native-Build the Autoware workspace using colcon.
+nos-build-clean: env-check nos-clean nos-workspace-aw nos-build ## native-Wipes the system clean and builds the Autoware workspace using colcon.
 	@echo -e "$(GREY)Cleaning previous build artifacts...$(RESET)"
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
 
@@ -195,7 +195,7 @@ nos-build-gui: env-check  ## native-Build the Autoware workspace using GUI.
 	pnpm install && pnpm tauri dev
 
 
-nos-clean: ## native-Clean the native build artifacts (build, install, log).
+nos-clean: ## native-Clean the native build artifacts deletes the workspace dirs (build, install, log).
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning native workspace ---$(RESET)"
 	rm -rf ../src/ ../build/ ../install/ ../log/
 
@@ -260,12 +260,15 @@ os-setup: env-check nos-clean ## util-Setup system for Autoware development.
 	@read -p "Do you wish to continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		(rm -rf /srv/autoware && echo 'removed /srv/autoware/'); \
+		rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
+		mkdir -p "$AW_DATA"; \
+		mkdir -p "$AW_MAPS"; \
+		echo -e "$(GREEN_LIGHT)Setup complete. Autoware data directories created at: $(AW_DATA) and $(AW_MAPS).$(RESET)"; \
 	else \
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-stage-data-maps: env-check-base ## util-Setup system for Autoware development.
+stage-data-maps: env-check-base ## util-Stages the autoware maps and datasets for the system.
 	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and maps ---$(RESET)"
 	@echo "This will download and stage the autoware maps and data on your system."
 	@bash -c ' \
