@@ -145,7 +145,7 @@ _check-semver:
 # Launch Targets
 # ==============================================================================
 
-launch-driving-scenario: ## Launch: Preparing and launching the planning simulator module.
+launch-driving-scenario: ## Launch: Launching the planning-lane-driving scenario.
 	@echo -e "$(PURPLE_BRIGHT)--- Launching planning simulation---$(RESET)"
 	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
 	@bash -c 'read -p "Continue? [y/N] " -n 1 -r; echo; \
