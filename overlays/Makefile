@@ -71,8 +71,6 @@ help: ## Display this help menu.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## openad-' | awk 'BEGIN {FS = ":.*?## openad-";}; {printf "  %-30s %s\n", $$1, $$2}'
 	@echo -e "\n$(BLUE_BRIGHT)Utility Targets:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## util-' | awk 'BEGIN {FS = ":.*?## util-";}; {printf "  %-30s %s\n", $$1, $$2}'
-	@echo -e "\n$(BLUE_BRIGHT)Launch Targets:$(RESET)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## ln-' | awk -v T="$(GREY)" -v D="$(GREY)" -v R="$(RESET)" 'BEGIN {FS = ":.*?## env-";}; {printf T "  %-30s" R " " D "%s" R "\n", $$1, $$2}'
 
 # ==============================================================================
 # Environment & Tooling Targets
@@ -289,28 +287,3 @@ stage-data-maps: env-check-base ## util-Stages the autoware maps and datasets fo
 	else \
 		echo -e "$(ORANGE)Data preparation cancelled.$(RESET)"; \
 	fi'
-
-
-# ==============================================================================
-# Launch Targets
-# ==============================================================================
-
-launch-planning-sim: 		## ln-Launch planning simulator for the Autoware stack.
-	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
-	@echo "This will run remove all data, staged states, and configuration from your system."
-	@read -p "Do you wish to continue? [y/N] " -n 1 -r; \
-	echo; \
-	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		sudo rm -rf ~/.ros  && echo 'removed ~/.ros'; \
-		sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
-		sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
-		sudo mkdir -p "$(AW_DATA)"; \
-		sudo mkdir -p "$(AW_MAPS)"; \
-		sudo chown ${USER}:${USER} $(AW_DATA); \
-		sudo chown ${USER}:${USER} $(AW_MAPS); \
-		mkdir -p "$(AW_DATA)"; \
-		mkdir -p "$(AW_MAPS)"; \
-		echo -e "$(GREEN_LIGHT)Setup complete. Autoware data directories created at: $(AW_DATA) and $(AW_MAPS).$(RESET)"; \
-	else \
-		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
-	fi
