@@ -250,11 +250,7 @@ cos-openad-build-cuda: env-check ## openad-Build CUDA-enabled images using the O
 # Utility Targets
 # ==============================================================================
 
-clean: nos-clean ## util-Clean all build artifacts from the workspace.
-	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
-	-docker image prune -f
-
-os-setup: env-check nos-clean ## util-Setup system for Autoware development.
+stage-prepare: env-check nos-clean ## util-Setup system for Autoware development.
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
 	@echo "This will run remove all data, staged states, and configuration from your system."
 	@read -p "Do you wish to continue? [y/N] " -n 1 -r; \
