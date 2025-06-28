@@ -148,7 +148,7 @@ nos-setup-dev-no-cuda: env-check-base ## native-Run the dev env setup script w/o
 	@read -p "Continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		(cd .. && ./setup-dev-env.sh --no-nvidia --no-cuda-drivers --runtime); \
+		(cd .. && ./setup-dev-env.sh -v --no-nvidia --no-cuda-drivers --runtime --data-dir "$(AW_DATA)"); \
 	else \
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
@@ -159,7 +159,7 @@ nos-setup-dev-cuda: env-check-base ## native-Run the dev env setup script w/ cud
 	@read -p "Continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		(cd .. && ./setup-dev-env.sh -v --data-dir $AW_DATA); \
+		(cd .. && ./setup-dev-env.sh -v --data-dir $(AW_DATA)); \
 	else \
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
@@ -208,7 +208,7 @@ cos-build: tool-check  ## docker-Build a container image (Monolithic). Params: I
 
 cos-run: tool-check  ## docker-Tag a Docker image (stubbed). Params: IMAGE_URL, IMAGE_NAME, IMAGE_TAG.
 	@echo -e "$(PURPLE_BRIGHT)--- Running Container  Image (universe-devel) ---$(RESET)"
-	(cd ../docker && ./run.sh --map-path $(AW_MAPS)/ --data-path $(AW_DATA)/ --devel --no-nvidia --pull-latest-image)
+	(cd ../docker && ./run.sh --map-path $(AW_MAPS)/ --data-path $(AW_DATA) --devel --no-nvidia --pull-latest-image)
 
 
 # ==============================================================================
@@ -258,12 +258,12 @@ stage-prepare: env-check-base nos-clean ## util-Setup stagign area for build of 
 		sudo rm -rf ~/.ros  && echo 'removed ~/.ros'; \
 		sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
 		sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
-		sudo mkdir -p "${AW_DATA}"; \
-		sudo mkdir -p "${AW_MAPS}"; \
-		sudo chown ${USER}:${USER} ${AW_DATA}; \
-		sudo chown ${USER}:${USER} ${AW_MAPS}; \
-		mkdir -p "$AW_DATA"; \
-		mkdir -p "$AW_MAPS"; \
+		sudo mkdir -p "$(AW_DATA)"; \
+		sudo mkdir -p "$(AW_MAPS)"; \
+		sudo chown ${USER}:${USER} $(AW_DATA); \
+		sudo chown ${USER}:${USER} $(AW_MAPS); \
+		mkdir -p "$(AW_DATA)"; \
+		mkdir -p "$(AW_MAPS)"; \
 		echo -e "$(GREEN_LIGHT)Setup complete. Autoware data directories created at: $(AW_DATA) and $(AW_MAPS).$(RESET)"; \
 	else \
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
