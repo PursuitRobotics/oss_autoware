@@ -250,13 +250,15 @@ cos-openad-build-cuda: env-check ## openad-Build CUDA-enabled images using the O
 # Utility Targets
 # ==============================================================================
 
-stage-prepare: env-check nos-clean ## util-Setup system for Autoware development.
+stage-prepare: env-check nos-clean ## util-Setup stagign area for build of Autoware stack.
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
 	@echo "This will run remove all data, staged states, and configuration from your system."
 	@read -p "Do you wish to continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
+		sudo rm -rf ~/.ros  && echo 'removed ~/.ros'; \
+		sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
+		sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
 		mkdir -p "$AW_DATA"; \
 		mkdir -p "$AW_MAPS"; \
 		echo -e "$(GREEN_LIGHT)Setup complete. Autoware data directories created at: $(AW_DATA) and $(AW_MAPS).$(RESET)"; \
