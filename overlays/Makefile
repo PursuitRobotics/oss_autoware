@@ -259,6 +259,9 @@ stage-prepare: env-check nos-clean ## util-Setup stagign area for build of Autow
 		sudo rm -rf ~/.ros  && echo 'removed ~/.ros'; \
 		sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
 		sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
+		sudo chown ${USER}:${USER} $AW_DATA; \
+		sudo chown ${USER}:${USER} $AW_MAPS; \
+		sudo chown ${USER}:${USER} $AW_MAPS; \
 		mkdir -p "$AW_DATA"; \
 		mkdir -p "$AW_MAPS"; \
 		echo -e "$(GREEN_LIGHT)Setup complete. Autoware data directories created at: $(AW_DATA) and $(AW_MAPS).$(RESET)"; \
