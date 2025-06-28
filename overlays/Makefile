@@ -183,7 +183,6 @@ nos-build: env-check nos-ros-deps ## native-Build the Autoware workspace using c
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
 	source /opt/ros/humble/setup.bash && \
 	(cd .. && colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release)
-
 nos-build-clean: env-check nos-clean nos-workspace-aw nos-build ## native-Wipes the system clean and builds the Autoware workspace using colcon.
 	@echo -e "$(GREY)Cleaning previous build artifacts...$(RESET)"
 	@echo -e "$(PURPLE_BRIGHT)--- Building Autoware workspace ---$(RESET)"
@@ -260,7 +259,6 @@ stage-prepare: env-check nos-clean ## util-Setup stagign area for build of Autow
 		sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
 		sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
 		sudo chown ${USER}:${USER} $AW_DATA; \
-		sudo chown ${USER}:${USER} $AW_MAPS; \
 		sudo chown ${USER}:${USER} $AW_MAPS; \
 		mkdir -p "$AW_DATA"; \
 		mkdir -p "$AW_MAPS"; \
