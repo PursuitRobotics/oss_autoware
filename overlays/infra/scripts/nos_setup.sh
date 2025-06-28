@@ -15,6 +15,6 @@ eval "$(fnm env --use-on-cd)"
 # install the latest LTS version of node
 fnm install --lts
 
-# and the python development tools
-sudo apt update
-sudo apt install -y python3 python3-pip python3-venv python3-dev build-essential make cmake
+# and the python development tools - these tools are handled by the ./setup-dev-env.sh script
+#sudo apt update
+#sudo apt install -y python3 python3-pip python3-venv python3-dev build-essential make cmake
