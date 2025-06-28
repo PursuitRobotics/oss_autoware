@@ -16,4 +16,5 @@ eval "$(fnm env --use-on-cd)"
 fnm install --lts
 
 # and the python development tools
+sudo apt update
 sudo apt install -y python3 python3-pip python3-venv python3-dev build-essential make cmake
