@@ -249,7 +249,7 @@ cos-openad-build-cuda: env-check ## openad-Build CUDA-enabled images using the O
 # Utility Targets
 # ==============================================================================
 
-stage-prepare: env-check nos-clean ## util-Setup stagign area for build of Autoware stack.
+stage-prepare: env-check-base nos-clean ## util-Setup stagign area for build of Autoware stack.
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
 	@echo "This will run remove all data, staged states, and configuration from your system."
 	@read -p "Do you wish to continue? [y/N] " -n 1 -r; \
@@ -258,8 +258,10 @@ stage-prepare: env-check nos-clean ## util-Setup stagign area for build of Autow
 		sudo rm -rf ~/.ros  && echo 'removed ~/.ros'; \
 		sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
 		sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
-		sudo chown ${USER}:${USER} $AW_DATA; \
-		sudo chown ${USER}:${USER} $AW_MAPS; \
+		sudo mkdir -p "${AW_DATA}"; \
+		sudo mkdir -p "${AW_MAPS}"; \
+		sudo chown ${USER}:${USER} ${AW_DATA}; \
+		sudo chown ${USER}:${USER} ${AW_MAPS}; \
 		mkdir -p "$AW_DATA"; \
 		mkdir -p "$AW_MAPS"; \
 		echo -e "$(GREEN_LIGHT)Setup complete. Autoware data directories created at: $(AW_DATA) and $(AW_MAPS).$(RESET)"; \
