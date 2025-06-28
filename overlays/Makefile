@@ -63,8 +63,8 @@ help: ## Display this help menu.
 	@echo -e "$(GREY)Usage: make [target] [VAR=value]$(RESET)\n"
 	@echo -e "$(BLUE_BRIGHT)Environment & Tooling Targets:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## env-' | awk -v T="$(GREEN_BRIGHT)" -v D="$(GREY)" -v R="$(RESET)" 'BEGIN {FS = ":.*?## env-";}; {printf T "  %-30s" R " " D "%s" R "\n", $$1, $$2}'
-	@echo -e "\n$(BLUE_BRIGHT)Launch & Tooling Targets:$(RESET)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## ll-' | awk -v T="$(YELLOW_BRIGHT)" -v D="$(GREY)" -v R="$(RESET)" 'BEGIN {FS = ":.*?## ll-";}; {printf T "  %-30s" R " " D "%s" R "\n", $$1, $$2}'
+	@echo -e "\n$(BLUE_BRIGHT)Launch & Simulation Targets:$(RESET)"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## launch-' | awk -v T="$(YELLOW_BRIGHT)" -v D="$(GREY)" -v R="$(RESET)" 'BEGIN {FS = ":.*?## launch-";}; {printf T "  %-30s" R " " D "%s" R "\n", $$1, $$2}'
 	@echo -e "\n$(BLUE_BRIGHT)NOS (Native Operating System) Build Targets:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep '## native-' | awk 'BEGIN {FS = ":.*?## native-";}; {printf "  %-30s %s\n", $$1, $$2}'
 	@echo -e "\n$(BLUE_BRIGHT)Container Targets (Monolithic):$(RESET)"
@@ -145,44 +145,17 @@ _check-semver:
 # Launch Targets
 # ==============================================================================
 
-ll-check: ## ll-Verify that essential tools (docker, git) are installed.
-	@echo -e "$(PURPLE_BRIGHT)--- Checking OS envars, and dependencies ---$(RESET)"
-	@if ! grep -q 'Ubuntu 22.04' /etc/os-release; then \
-		echo -e "$(RED_BRIGHT)Error: Host OS is not Ubuntu 22.04. Some features may not work.$(RESET)"; \
-		exit 1; \
-	fi
-	@echo -e "$(PURPLE_BRIGHT)--- Checking for required tools ---$(RESET)"
-	@$(call check_tool,docker)
-	@$(call check_tool,git)
-
-# Add this target to your existing Makefile
-
-ll-check-gpu: ## ll-Check for NVIDIA GPU and mRoc device
-	@echo -e "$(PURPLE_BRIGHT)--- Checking for GPU (NVIDIA or AMD) ---$(RESET)"
-	@if ! command -v nvidia-smi >/dev/null; then \
-		echo -e "Warning: $(YELLOW_BRIGHT)NVIDIA GPU not found. CUDA-dependent modules will be skipped or fail.$(RESET)"; \
-	fi
-	@if lspci | grep -i nvidia > /dev/null; then \
-		echo -e "$(GREEN_BRIGHT)✔ NVIDIA GPU detected. Installing CUDA libraries...$(RESET)"; \
-		# sudo apt update && sudo apt install -y nvidia-cuda-toolkit; \
-	elif lspci | grep -i amd | grep -i vga > /dev/null; then \
-		echo -e "$(YELLOW_BRIGHT)⚠ AMD GPU detected. CUDA is not supported on AMD.$(RESET)"; \
-		echo -e "$(RED_BRIGHT)no cuda found$(RESET)"; \
+launch-driving-scenario: ## Launch: Preparing and launching the planning simulator module.
+	@echo -e "$(PURPLE_BRIGHT)--- Launching planning simulation---$(RESET)"
+	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
+	@bash -c 'read -p "Continue? [y/N] " -n 1 -r; echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		echo -e "$(GREEN_BRIGHT)Starting setup and simulation...$(RESET)"; \
+		cd .. && source ./install/setup.bash && \
+		ros2 launch autoware_launch planning_simulator.launch.xml map_path:="$(AW_MAPS)/sample-map-planning" vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit; \
 	else \
-		echo -e "$(RED_BRIGHT)✘ No compatible GPU detected$(RESET)"; \
-		echo -e "$(RED_BRIGHT)no cuda found$(RESET)"; \
-	fi
-	@echo -e "$(PURPLE_BRIGHT)--- Checking for mRoc device ---$(RESET)"
-	@if lspci | grep -i mroc > /dev/null || lsusb | grep -i mroc > /dev/null; then \
-		echo -e "$(GREEN_BRIGHT)✔ mRoc device found$(RESET)"; \
-	else \
-		echo -e "$(RED_BRIGHT)✘ mRoc device not detected$(RESET)"; \
-	fi
-
-
-ll-check-base: tool-check ## ll-Run all environment and dependency checks.
-	@echo -e "$(PURPLE_BRIGHT)--- Checking basic ennvars and tools---$(RESET)"
-
+		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
+	fi'
 
 
 # ==============================================================================
