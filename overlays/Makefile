@@ -275,8 +275,8 @@ stage-prepare: env-check-base nos-clean ## util-Setup staging area for build of 
 	@read -p "Do you wish to continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		sudo rm -rf ~/.ros  && echo 'removed ~/.ros'; \
-		sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
+		# sudo rm -rf ~/.ros  && echo 'removed ~/.ros'; \
+		# sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
 		sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
 		sudo rm -rf $(HOME)/autoware_data && echo 'removed $(HOME)/autoware_data'; \
 		sudo rm -rf ../build/ && echo 'removed ../build/'; \
