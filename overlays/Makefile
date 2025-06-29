@@ -278,6 +278,11 @@ stage-prepare: env-check-base nos-clean ## util-Setup staging area for build of 
 		sudo rm -rf ~/.ros  && echo 'removed ~/.ros'; \
 		sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
 		sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
+		sudo rm -rf $(HOME)/autoware_data && echo 'removed $(HOME)/autoware_data'; \
+		sudo rm -rf ../build/ && echo 'removed ../build/'; \
+		sudo rm -rf ../install/ && echo 'removed ../install/'; \
+		sudo rm -rf ../log/ && echo 'removed ../log/'; \
+		sudo rm -rf ../src/ && echo 'removed ../src/'; \
 		sudo mkdir -p "$(AW_DATA)"; \
 		sudo mkdir -p "$(AW_MAPS)"; \
 		sudo chown ${USER}:${USER} $(AW_DATA); \
@@ -293,19 +298,18 @@ stage-data-maps: env-check-base ## util-Stages the autoware maps and datasets fo
 	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and maps ---$(RESET)"
 	@echo "This will download and stage the autoware maps and data on your system."
 	@bash -c ' \
-	read -p "~/autoware_data, $(AW_DATA), and $(AW_MAPS) will be deleted.\nDo you wish to continue? [y/N] " -n 1 -r; \
+	echo -e "$(RED_LIGHT)~/autoware_data, $(AW_DATA), and $(AW_MAPS) will be deleted. .$(RESET)"; \
+	read -p "Do you wish to continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
 		echo "Removing dir: $(AW_MAPS)/sample-map-planning/"; \
-		sudo rm -rf "$(HOME)/autoware_data"; \
-		sudo rm -rf "$(AW_DATA)"; \
-		sudo rm -rf "$(AW_MAPS)"; \
+		sudo rm -rf "$(AW_MAPS)/sample-map-planning"; \
 		echo "Downloading [sample-map-planning] maps..."; \
 		sudo curl -L -o "$(AW_MAPS)/sample-map-planning.zip" "https://docs.google.com/uc?export=download&id=1499_nsbUbIeturZaDj7jhUownh5fvXHd"; \
 		echo "Unzipping..."; \
 		sudo unzip -d "$(AW_MAPS)" "$(AW_MAPS)/sample-map-planning.zip"; \
-		echo "Cleaning up..."; \
+		echo "Cleaning up sample-map-planning maps"; \
 		sudo rm "$(AW_MAPS)/sample-map-planning.zip"; \
 	else \
-		echo -e "$(ORANGE)Data preparation cancelled.$(RESET)"; \
+		echo -e "$(ORANGE)Staging areas preparation cancelled.$(RESET)"; \
 	fi'
