@@ -298,7 +298,7 @@ stage-data-maps: env-check-base ## util-Stages the autoware maps and datasets fo
 	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and maps ---$(RESET)"
 	@echo "This will download and stage the autoware maps and data on your system."
 	@bash -c ' \
-	echo -e "$(RED_LIGHT)~/autoware_data, $(AW_DATA), and $(AW_MAPS) will be deleted. .$(RESET)"; \
+	echo -e "$(AW_MAPS)/sample-map-planning will be deleted. .$(RESET)"; \
 	read -p "Do you wish to continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
