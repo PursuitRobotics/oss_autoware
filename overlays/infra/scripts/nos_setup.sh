@@ -1,5 +1,8 @@
 # !/usr/bin/env bash
 
+
+# This script sets up the environment for the nos overlay.
+# add to ~/.bashrc or ~/.bash_aliasas
 export ROS_DISTRO=humble
 export ROS_DOMAIN_ID=1
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
