@@ -293,12 +293,14 @@ stage-data-maps: env-check-base ## util-Stages the autoware maps and datasets fo
 	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and maps ---$(RESET)"
 	@echo "This will download and stage the autoware maps and data on your system."
 	@bash -c ' \
-	read -p "Do you wish to continue? [y/N] " -n 1 -r; \
+	read -p "~/autoware_data, $(AW_DATA), and $(AW_MAPS) will be deleted.\nDo you wish to continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
 		echo "Removing dir: $(AW_MAPS)/sample-map-planning/"; \
-		sudo rm -rf "$(AW_MAPS)/sample-map-planning/"; \
-		echo "Downloading maps..."; \
+		sudo rm -rf "$(HOME)/autoware_data"; \
+		sudo rm -rf "$(AW_DATA)"; \
+		sudo rm -rf "$(AW_MAPS)"; \
+		echo "Downloading [sample-map-planning] maps..."; \
 		sudo curl -L -o "$(AW_MAPS)/sample-map-planning.zip" "https://docs.google.com/uc?export=download&id=1499_nsbUbIeturZaDj7jhUownh5fvXHd"; \
 		echo "Unzipping..."; \
 		sudo unzip -d "$(AW_MAPS)" "$(AW_MAPS)/sample-map-planning.zip"; \
