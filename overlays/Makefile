@@ -294,8 +294,8 @@ stage-prepare: env-check-base nos-clean ## util-Setup staging area for build of 
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
 	fi
 
-stage-data-maps: env-check-base ## util-Stages the autoware maps and datasets for the system.
-	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and maps ---$(RESET)"
+stage-data-maps-planning: env-check-base ## util-Stages the autoware maps and datasets for the system.
+	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and planning maps ---$(RESET)"
 	@echo "This will download and stage the autoware maps and data on your system."
 	@bash -c ' \
 	echo -e "$(AW_MAPS)/sample-map-planning will be deleted. .$(RESET)"; \
@@ -313,3 +313,24 @@ stage-data-maps: env-check-base ## util-Stages the autoware maps and datasets fo
 	else \
 		echo -e "$(ORANGE)Staging areas preparation cancelled.$(RESET)"; \
 	fi'
+
+stage-data-maps-rosbag: env-check-base ## util-Stages the autoware maps and datasets for the system.
+	@echo -e "$(PURPLE_BRIGHT)--- Stage autoware data and rosbag maps ---$(RESET)"
+	@echo "This will download and stage the autoware rosbag maps and data on your system."
+	@bash -c ' \
+	echo -e "$(AW_MAPS)/sample-map-rosbag will be deleted. .$(RESET)"; \
+	read -p "Do you wish to continue? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		echo "Removing dir: $(AW_MAPS)/sample-map-rosbag/"; \
+		sudo rm -rf "$(AW_MAPS)/sample-map-rosbag"; \
+		echo "Downloading [sample-map-rosbag] maps..."; \
+		sudo curl -L -o "$(AW_MAPS)/sample-map-rosbag.zip" "https://docs.google.com/uc?export=download&id=1A-8BvYRX3DhSzkAnOcGWFw5T30xTlwZI"; \
+		echo "Unzipping..."; \
+		sudo unzip -d "$(AW_MAPS)" "$(AW_MAPS)/sample-map-rosbag.zip"; \
+		echo "Cleaning up sample-map-rosbag maps"; \
+		sudo rm "$(AW_MAPS)/sample-map-rosbag.zip"; \
+	else \
+		echo -e "$(ORANGE)Staging areas preparation cancelled.$(RESET)"; \
+	fi'
+
