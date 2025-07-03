@@ -333,4 +333,20 @@ stage-data-maps-rosbag: env-check-base ## util-Stages the autoware maps and data
 	else \
 		echo -e "$(ORANGE)Staging areas preparation cancelled.$(RESET)"; \
 	fi'
-
+	@echo "This will download and stage the autoware rosbag data on your system."
+	@bash -c ' \
+	echo -e "$(AW_MAPS)/sample-rosbag will be deleted. .$(RESET)"; \
+	read -p "Do you wish to continue? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		echo "Removing dir: $(AW_MAPS)/sample-rosbag/"; \
+		sudo rm -rf "$(AW_MAPS)/sample-rosbag"; \
+		echo "Downloading [sample-rosbag] maps..."; \
+		sudo curl -L -o "$(AW_MAPS)/sample-rosbag.zip" "https://docs.google.com/uc?export=download&id=1sU5wbxlXAfHIksuHjP3PyI2UVED8lZkP"; \
+		echo "Unzipping..."; \
+		sudo unzip -d "$(AW_MAPS)" "$(AW_MAPS)/sample-rosbag.zip"; \
+		echo "Cleaning up sample-rosbag maps"; \
+		sudo rm "$(AW_MAPS)/sample-rosbag.zip"; \
+	else \
+		echo -e "$(ORANGE)Staging areas preparation cancelled.$(RESET)"; \
+	fi'
