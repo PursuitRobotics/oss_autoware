@@ -12,7 +12,10 @@ ros2 launch autoware_launch planning_simulator.launch.xml map_path:=${AW_MAP}/sa
 ```
 # Rosbag Simulator
 
+source install/setup.bash
+
 ## step - 1 launch with the skinned version of rviz
+
 ros2 launch autoware_launch logging_simulator.launch.xml map_path:=$HOME/autoware_map/sample-map-rosbag vehicle_model:=sample_vehicle sensor_model:=sample_sensor_kit perception:=false
 
 ## step -1 launch without the skinned version of rviz
@@ -25,6 +28,7 @@ ros2 bag play $HOME/autoware_map/sample-rosbag/ -r 0.2 -s sqlite3
 ros2 bag info $AW_MAP/sample-rosbag
 
 ros2 topic list
+search: /sensing/lidar/concatenated/pointcloud
 
 ros2 topic echo <topic>
 
