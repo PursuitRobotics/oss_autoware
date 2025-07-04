@@ -30,6 +30,12 @@ ros2 bag info $AW_MAP/sample-rosbag
 ros2 topic list
 search: /sensing/lidar/concatenated/pointcloud
 
+Settings in RVIZ
+topic: /sensing/lidar/concatenated/pointcloud
+reliability policy: best_effort
+frame of reference: base_link
+global option:fixed frame :base_link
+
 ros2 topic echo <topic>
 
 # Scenario Testing
