@@ -10,6 +10,13 @@ export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 export AW_DATA=/srv/autoware/autoware_data
 export AW_MAPS=/srv/autoware/autoware_maps
 
+# make sure /srv/autoware is owned by $USER:$USER
+sudo chown -R /srv/autoware ~/autoware
+
+# create a symlink which points ~/autoware to the path /srv/autoware
+
+ln -s /srv/autoware ~/autoware
+
 function setup_ros2 {
     local DIR=${HOME}/dev/pursuit/oss_autoware
 
