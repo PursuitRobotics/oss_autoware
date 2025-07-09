@@ -2,13 +2,5 @@ repositories:
   # pursuit robotics
   pursuit/alt_universe:
     type: git
-    url: https://github.com/PursuitRobotics/aw_alt_universe.git
-    version: 0.0.1
-  pursuit/sensor_kit:
-    type: git
-    url: https://github.com/PursuitRobotics/aw_alt_sensor_kit.git
-    version: 0.0.1
-  pursuit/vehicle:
-    type: git
-    url: https://github.com/PursuitRobotics/aw_alt_veheicle.git
-    version: 0.0.1
+    url: https://github.com/PursuitRobotics/aw_autoware_msgs.git
+    #version: 1.9.0
