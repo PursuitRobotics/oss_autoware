@@ -1,86 +1,118 @@
-# Build Environment for Pursuit Robotics Autoware Stack
+# Pursuit Robotics Autoware Stack: Build and Development Environment
 
-This is an extension of the Autoware Foundation build system.  The bootstrapping of autowawre is performed from within the overlays directory of the autoware foundation root source
+This repository provides the build environment and necessary tooling to develop, build, and deploy the Pursuit Robotics Autoware Stack. It extends the Autoware Foundation's build system, enabling a streamlined development workflow on a native operating system (NOS).
 
-## Building Sources from Native Operating System (NOS).
+This project is a fork of the official Autoware repository. We will periodically merge changes from the upstream Autoware community to incorporate the latest features and bug fixes. All proprietary changes and customizations will be isolated within the `pursuit` directory. The primary development and build activities are orchestrated from this directory.
 
-Building on the native operating system otherwise known as NOS. It will install frameworks, toolskits, drivers, and depdent packages directly into your OS stack.
+## Target Audience
 
-### Prerequisition
+This document is intended for software engineers and developers actively contributing to the Pursuit Robotics Autoware Stack.
 
-1. Ubuntu 22.04 (Jammy)
-2. git
-3. python3
-4. docker & docker-compose
-5. pnpm (fast and more efficient replacement for npm)
-6. fnm (fast node manager)
+## Development Environment Setup
 
-Note refer to ../overlays/scripts/nos_setup.sh to install prerequisites global environment variables and tools mentioned above. These will need to on your system prior to using the autoware custom build system.
+This section outlines the different methods for setting up a development environment for the Pursuit Robotics Autoware Stack.
 
-## Building from Sources
+### Native OS (Bare Metal) Installation
 
-### Step 1 - Setup the Dev Environment
+This method involves building the Autoware stack directly on a pristine Ubuntu 22.04 (Jammy) operating system.
 
-```bash
-    git clone https://github.com/PursuitRobotics/oss_autoware.git
-    cd oss_autoware
+#### 1. Prerequisites
 
-    # git will can find the root git repo project by using --show-toplevel flag
-    local ROOT_DIR=git rev-parse --show-toplevel
-    local WORKSPACE=${ROOT_DIR}
+Ensure the following tools are installed on your development machine:
 
-    cd ${WORKSPACE}/overlays
+- Git
+- Python 3
+- Docker and Docker Compose
+- pnpm and fnm
 
-    # to displa the list of make-takks use the --help
-    make --help
+The `infra/scripts/nos_setup.sh` script can be used as a reference for installing these prerequisites.
 
-    # use the autoware setup-dev scripts to install the prerequistes and requirement tools, and packages used by python, cmake, c/c++ etc.  This step is required for the initial staging of the autowave build sources.
-    make nos-setup-dev-no-cuda
-```
+#### 2. Environment Setup
 
-### Step 2 - Create the Autoware Workspace
+To set up the development environment, execute the following command from the `pursuit` directory:
 
 ```bash
-    local ROOT_DIR=git rev-parse --show-toplevel
-    local WORKSPACE=${ROOT_DIR}
-
-    cd ${WORKSPACE}/overlays
-
-    # Generate the autoware workspace. The staging area (transient and resources managed by autoware build system (crosdep & olcon)
-    make nos-workspace-autoware
+make nos-setup-dev-no-cuda
 ```
 
-### Step 3 - Install the ROS2 Dependency Tool (ROSDEP)
+This command will install all the necessary dependencies and tools required to build the Autoware stack.
+
+#### 3. Workspace Creation
+
+Create the Autoware workspace by running the following command from the `pursuit` directory:
 
 ```bash
-    local ROOT_DIR=git rev-parse --show-toplevel
-    local WORKSPACE=${ROOT_DIR}
-
-    cd ${WORKSPACE}/overlays
-    make nos-ros-deps
+make nos-workspace-autoware
 ```
 
-### Step 4 - Execute build via colcon build system
+This will check out the Autoware source code into the `src/` directory, based on the repositories defined in the `.repos` files.
+
+#### 4. Dependency Installation
+
+Install the ROS 2 dependencies for the Autoware packages using `rosdep`:
 
 ```bash
-    local ROOT_DIR=git rev-parse --show-toplevel
-    local WORKSPACE=${ROOT_DIR}
-
-    cd ${WORKSPACE}/overlays
-
-    # Buil the entire autoare software layers using colcon build system
-    # note: rosdep must be invoked or setup first. It provides the dependency injections and pakcage integrations sourced by the *.repos (git and subgit repositories)
-    make nos-build
+make nos-ros-deps
 ```
 
-### Step 5 - End-to-End Verificaiton
+#### 5. Building the Autoware Stack
 
-Launch a simple planning simulator. 
+Compile the Autoware source code using `colcon`:
 
-```shell
-    local ROOT_DIR=git rev-parse --show-toplevel
-    local WORKSPACE=${ROOT_DIR}
-
-    cd ${WORKSPACE}/overlays
-    make launch-
+```bash
+make nos-build
 ```
+
+#### 6. Verification
+
+To verify the build, launch the planning simulator:
+
+```bash
+make launch-planning-simulator
+```
+
+Refer to the `LAUNCH.md` file for more detailed information on launching various simulation and testing scenarios.
+
+### Container-Based Environments
+
+For a more isolated and reproducible development environment, we provide container-based solutions.
+
+#### Monolithic Build
+
+(Coming Soon) This section will describe how to build and run the Autoware stack within a single, self-contained Docker container.
+
+#### Orchestrated Docker Images with OpenAD Kit
+
+(Coming Soon) This section will provide instructions on how to use the OpenAD Kit to build and run the Autoware stack as a set of orchestrated Docker containers. The OpenAD Kit simplifies the development and deployment of Autoware by providing pre-configured `devel` and `runtime` Docker images.
+
+## High-Level Architecture
+
+The Pursuit Robotics Autoware Stack is built upon the Robot Operating System 2 (ROS 2) and the Autoware Foundation's open-source autonomous driving software. This repository provides a set of Makefiles, scripts, and configurations to manage the build process and development environment.
+
+The core components of this build environment are:
+
+- **Make-based Build System:** A `Makefile` within the `pursuit` directory orchestrates the entire build process.
+- **colcon:** The primary build tool for ROS 2, used to build the Autoware workspace.
+- **rosdep:** A command-line tool for installing system dependencies for ROS packages.
+- **vcs:** A tool for importing and managing the various git repositories that make up the Autoware source code.
+- **.repos Files:** These files define the specific versions of the various git repositories that constitute the Autoware source code.
+
+## Autoware Workspace
+
+The Autoware project uses a workspace-based development approach. The workspace is comprised of the following directories, which are created and managed by the build system:
+
+- `src/`: Contains the source code for all the Autoware ROS 2 packages, imported using the `vcs` tool. This directory is not tracked by git.
+- `build/`: Holds intermediate files generated by the build process.
+- `install/`: Contains the final, installed version of all the packages.
+- `log/`: Contains logs generated by `colcon` during the build process.
+
+## Codebase Structure
+
+The `pursuit` directory is the primary working directory for developers. It contains the following:
+
+- `data/`: Contains sample data for testing and simulation.
+- `docs/`: Contains project documentation.
+- `infra/`: Contains infrastructure-related scripts and configurations.
+- `tools/`: Contains custom tools for the project.
+- `Makefile`: Defines the main build tasks.
+- `*.repos`: Files that define the git repositories for the Autoware source code.
