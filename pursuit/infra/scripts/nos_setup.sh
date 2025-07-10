@@ -7,15 +7,16 @@ export ROS_DISTRO=humble
 export ROS_DOMAIN_ID=1
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
-export AW_DATA=/srv/autoware/autoware_data
-export AW_MAPS=/srv/autoware/autoware_maps
+export AW_HOME=/srv/autoware
+export AW_DATA=${AW_HOME}/autoware_data
+export AW_MAPS=${AW_HOME}/autoware_maps
 
 # make sure /srv/autoware is owned by $USER:$USER
-sudo chown -R /srv/autoware ~/autoware
+sudo chown ${USER}:${USER}-R ${AW_HOME}
 
 # create a symlink which points ~/autoware to the path /srv/autoware
 
-ln -s /srv/autoware ~/autoware
+ln -s ${AW_HOME} ~/autoware
 
 function setup_ros2 {
     local DIR=${HOME}/dev/pursuit/oss_autoware

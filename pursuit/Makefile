@@ -270,7 +270,7 @@ cos-openad-build-cuda: env-check ## openad-Build CUDA-enabled images using the O
 # Utility Targets
 # ==============================================================================
 
-stage-prepare: env-check-base nos-clean ## util-Setup staging area for build of Autoware stack.
+stage-purge: env-check-base nos-clean ## util-Setup staging area for build of Autoware stack.
 	@echo -e "$(PURPLE_BRIGHT)--- Cleaning Docker artifacts (pruning dangling images) ---$(RESET)"
 	@echo "This will run remove all data, staged states, and configuration from your system."
 	@read -p "Do you wish to continue? [y/N] " -n 1 -r; \
@@ -278,18 +278,18 @@ stage-prepare: env-check-base nos-clean ## util-Setup staging area for build of 
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
 		# sudo rm -rf ~/.ros  && echo 'removed ~/.ros'; \
 		# sudo rm -rf /opt/ros  && echo 'removed /opt/ros'; \
-		sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
-		sudo rm -rf $(HOME)/autoware_data && echo 'removed $(HOME)/autoware_data'; \
+		#sudo rm -rf /srv/autoware && echo 'removed /srv/autoware/'; \
+		sudo rm -rf $(AW_HOME) && echo 'removed $(AW_HOME)'; \
 		sudo rm -rf ../build/ && echo 'removed ../build/'; \
 		sudo rm -rf ../install/ && echo 'removed ../install/'; \
 		sudo rm -rf ../log/ && echo 'removed ../log/'; \
 		sudo rm -rf ../src/ && echo 'removed ../src/'; \
+		sudo mkdir -p "$(AW_HOME)"; \
+		sudo chown -R $(USER):$(USER) "$(AW_HOME)"; \
 		sudo mkdir -p "$(AW_DATA)"; \
 		sudo mkdir -p "$(AW_MAPS)"; \
-		sudo chown ${USER}:${USER} $(AW_DATA); \
-		sudo chown ${USER}:${USER} $(AW_MAPS); \
-		mkdir -p "$(AW_DATA)"; \
-		mkdir -p "$(AW_MAPS)"; \
+		sudo chown $(USER):$(USER) $(AW_DATA); \
+		sudo chown $(USER):$(USER) $(AW_MAPS); \
 		echo -e "$(GREEN_LIGHT)Setup complete. Autoware data directories created at: $(AW_DATA) and $(AW_MAPS).$(RESET)"; \
 	else \
 		echo -e "$(ORANGE)Setup cancelled.$(RESET)"; \
