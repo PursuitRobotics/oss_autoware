@@ -1,9 +1,16 @@
 repositories:
+  # global launcher scripts
+  launch:
+    type: git
+    url: https://github.com/PursuitRobotics/ugv1_launch.git
   # sensor_kit
-  sensor_kit/ugv1_sensor_kit_launch:
+  src/sensor_kit/ugv1_sensor_kit_launch:
     type: git
     url: https://github.com/PursuitRobotics/ugv1_sensor_kit_launch.git
   # vehicle
-  vehicle/ugv1_vehicle_launch:
+  src/vehicle/ugv1_vehicle_launch:
     type: git
     url: https://github.com/PursuitRobotics/ugv1_vehicle_launch.git
+  src/vehicle/external/ugv1_interface:
+    type: git
+    url: https://github.com/PursuitRobotics/ugv1_interface.git
