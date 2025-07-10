@@ -1,6 +1,0 @@
-repositories:
-  # pursuit robotics
-  pursuit/alt_universe:
-    type: git
-    url: https://github.com/PursuitRobotics/aw_autoware_msgs.git
-    #version: 1.9.0
