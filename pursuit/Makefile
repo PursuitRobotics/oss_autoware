@@ -189,6 +189,7 @@ nos-workspace-autoware: env-check ## native-Import Autoware source repositories 
 	rm -rf ../src
 	mkdir -p ../src
 	vcs import ../src < ../autoware.repos
+	vcs import ../src < ./pursuit.repos
 
 nos-ros-deps: env-check ## native-Install ros2 system dependencies using rosdep.
 	@echo -e "$(PURPLE_BRIGHT)--- Installing ROS dependencies ---$(RESET)"

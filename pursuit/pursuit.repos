@@ -1,0 +1,9 @@
+repositories:
+  # sensor_kit
+  sensor_kit/ugv1_sensor_kit_launch:
+    type: git
+    url: https://github.com/PursuitRobotics/ugv1_sensor_kit_launch.git
+  # vehicle
+  vehicle/ugv1_vehicle_launch:
+    type: git
+    url: https://github.com/PursuitRobotics/ugv1_vehicle_launch.git
