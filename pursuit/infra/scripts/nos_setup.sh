@@ -8,8 +8,11 @@ export ROS_DOMAIN_ID=1
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 export AW_HOME=/srv/autoware
+export AW_WORKSPACE=${AW_HOME}/dev/pursuit/oss_autoware
 export AW_DATA=${AW_HOME}/autoware_data
 export AW_MAPS=${AW_HOME}/autoware_maps
+export AW_LAUNCH=${AW_HOME}/autoware_launch
+
 
 # make sure /srv/autoware is owned by $USER:$USER
 sudo chown ${USER}:${USER}-R ${AW_HOME}
@@ -17,6 +20,23 @@ sudo chown ${USER}:${USER}-R ${AW_HOME}
 # create a symlink which points ~/autoware to the path /srv/autoware
 
 ln -s ${AW_HOME} ~/autoware
+
+function find_build_errs() {
+    # Find all non-empty stderr.log files and store the list in a variable.
+    error_files=$(grep -l -v '^$' -r ${AW_WORKSPACE}/log/latest_build --include="stderr.log")
+
+    # Check if the variable is empty.echo 
+    if [ -z "$error_files" ]; then
+    # If it's empty, no files with errors were found.
+    echo "no build errors found"
+    else
+    # If it's not empty, print a header and the list of files with errors.
+    echo "Build errors found in the following files:"
+    echo "$error_files"
+    # You might want to exit with an error code to stop the script.
+    # exit 1
+    fi
+}
 
 function setup_ros2 {
     local DIR=${HOME}/dev/pursuit/oss_autoware
