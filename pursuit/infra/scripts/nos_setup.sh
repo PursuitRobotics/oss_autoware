@@ -7,8 +7,9 @@ export ROS_DISTRO=humble
 export ROS_DOMAIN_ID=1
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
+export AW_WORKSPACE=${HOME}/dev/pursuit/oss_autoware
+
 export AW_HOME=/srv/autoware
-export AW_WORKSPACE=${AW_HOME}/dev/pursuit/oss_autoware
 export AW_DATA=${AW_HOME}/autoware_data
 export AW_MAPS=${AW_HOME}/autoware_maps
 export AW_LAUNCH=${AW_HOME}/autoware_launch
@@ -22,17 +23,23 @@ sudo chown ${USER}:${USER}-R ${AW_HOME}
 ln -s ${AW_HOME} ~/autoware
 
 function find_build_errs() {
+    # Color definitions
+    YELLOW='\033[1;33m'
+    RED='\033[1;31m'
+    GREEN='\033[0;32m'
+    RESET='\033[0m'
+
     # Find all non-empty stderr.log files and store the list in a variable.
     error_files=$(grep -l -v '^$' -r ${AW_WORKSPACE}/log/latest_build --include="stderr.log")
 
     # Check if the variable is empty.echo 
     if [ -z "$error_files" ]; then
     # If it's empty, no files with errors were found.
-    echo "no build errors found"
+    echo -e "[${GREEN}Build Info${RESET}]: no build errors found"
     else
     # If it's not empty, print a header and the list of files with errors.
-    echo "Build errors found in the following files:"
-    echo "$error_files"
+    echo -e "[${RED}Build Errors${RESET}]: errors found in the following files:"
+    echo -e "${YELLOW}$error_files${RESET}"
     # You might want to exit with an error code to stop the script.
     # exit 1
     fi
