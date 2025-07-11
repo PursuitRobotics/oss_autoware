@@ -157,6 +157,18 @@ launch-driving-scenario: ## launch-Launch a driving scenario simulation.
 		echo -e "$(ORANGE)Launch cancelled.$(RESET)"; \
 	fi'
 
+launch-ugv1-scenario: ## launch-Launch a driving scenario simulation.
+	@echo -e "$(PURPLE_BRIGHT)--- Launching planning simulation---$(RESET)"
+	@echo "This will launch the ugv1 vehicle simulator - lane driving scenario using ugv1 vehicle. It may ask for your sudo password."
+	@bash -c 'read -p "Continue? [y/N] " -n 1 -r; echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		echo -e "$(GREEN_BRIGHT)Starting setup and simulation...$(RESET)"; \
+		cd .. && source ./install/setup.bash && \
+		ros2 launch autoware_launch planning_simulator.launch.xml map_path:="$(AW_MAPS)/sample-map-planning" vehicle_model:=ugv1_vehicle sensor_model:=ugv1_sensor_kit; \
+	else \
+		echo -e "$(ORANGE)Launch cancelled.$(RESET)"; \
+	fi'
+
 
 # ==============================================================================
 # NOS (Native Operating System) Build Targets
