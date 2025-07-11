@@ -15,6 +15,11 @@ export AW_MAPS=${AW_HOME}/autoware_maps
 export AW_LAUNCH=${AW_HOME}/autoware_launch
 
 
+# should be installed by the ansible scripts
+# .bashrc 
+export PATH="/usr/local/cuda/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/cuda/lib64:$LD_LIBRARY_PATH"
+
 # make sure /srv/autoware is owned by $USER:$USER
 sudo chown ${USER}:${USER}-R ${AW_HOME}
 

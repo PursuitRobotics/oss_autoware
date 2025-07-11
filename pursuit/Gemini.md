@@ -60,3 +60,7 @@ The `LAUNCH.md` file contains detailed instructions on how to launch various sim
 ## ROS2 Resources
 
 The `ROS2.md` file contains a collection of useful resources for learning and working with ROS2.
+
+## Gemini Directives
+
+*   All generated files should be placed in the `pursuit/` directory.

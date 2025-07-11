@@ -186,8 +186,8 @@ nos-setup-dev-no-cuda: env-check-base ## native-Run the dev env setup script w/o
 	fi
 
 nos-setup-dev-cuda: env-check-base ## native-Run the dev env setup script w/ cuda and nvidia drivers.
-	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> No CUDA/NVIDIA---$(RESET)"
-	@echo "This will run '../setup-dev-env.sh'. It may ask for your sudo password."
+	@echo -e "$(PURPLE_BRIGHT)--- Setting up Native Development Environment --> Installs CUDA/NVIDIA drivers ---$(RESET)"
+	@echo "This will run '../setup-dev-env.sh with cuda and nvidia drviers'. It may ask for your sudo password."
 	@read -p "Continue? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
@@ -297,6 +297,7 @@ stage-purge: env-check-base nos-clean ## util-Setup staging area for build of Au
 		sudo rm -rf ../install/ && echo 'removed ../install/'; \
 		sudo rm -rf ../log/ && echo 'removed ../log/'; \
 		sudo rm -rf ../src/ && echo 'removed ../src/'; \
+		sudo mkdir -p ../src/; \
 		sudo mkdir -p "$(AW_HOME)"; \
 		sudo chown -R $(USER):$(USER) "$(AW_HOME)"; \
 		sudo mkdir -p "$(AW_DATA)"; \
