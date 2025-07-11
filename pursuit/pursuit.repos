@@ -4,13 +4,13 @@ repositories:
     type: git
     url: https://github.com/PursuitRobotics/ugv1_launch.git
   # sensor_kit
-  src/sensor_kit/ugv1_sensor_kit_launch:
+  sensor_kit/ugv1_sensor_kit_launch:
     type: git
     url: https://github.com/PursuitRobotics/ugv1_sensor_kit_launch.git
   # vehicle
-  src/vehicle/ugv1_vehicle_launch:
+  vehicle/ugv1_vehicle_launch:
     type: git
     url: https://github.com/PursuitRobotics/ugv1_vehicle_launch.git
-  src/vehicle/external/ugv1_interface:
+  vehicle/external/ugv1_interface:
     type: git
     url: https://github.com/PursuitRobotics/ugv1_interface.git
