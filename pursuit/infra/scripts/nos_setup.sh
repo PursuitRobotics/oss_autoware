@@ -7,7 +7,7 @@ export ROS_DISTRO=humble
 export ROS_DOMAIN_ID=1
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
-export AW_WORKSPACE=${HOME}/dev/pursuit/oss_autoware
+export AW_WORKSPACE=${HOME}/dev/oss_autoware
 
 export AW_HOME=/srv/autoware
 export AW_DATA=${AW_HOME}/autoware_data
